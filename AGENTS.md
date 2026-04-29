@@ -48,13 +48,14 @@ Feature-Sliced Design を採用します。
 - `src/shared/db/index.ts` の遅延初期化ヘルパー `getDb()` を使ってください。
 - DB 用の集約スキーマは `src/shared/db/schema.ts` に置き、entity ごとの Drizzle schema は `src/entities/*/model/schema.ts` に置いてください。
 - `prefecture_visits` は `userId + prefectureCode` を一意にします。都道府県コードだけを一意にしないでください。
-- 認証が入るまでは、動作確認用ユーザーとして `demo-user` を使います。
+- 現在の主導線はサウナイキタイID単位です。`prefecture_visits.userId` は基本的に `saunnerId` を使います。
 - サウナイキタイIDに紐づくユーザーは `saunners` テーブルに保存します。
 - サウナイキタイ由来の集計では `prefecture_visits.userId` に `saunnerId` をそのまま保存します。
 
 ## サウナイキタイ連携
 
 - マップURLは `/saunners/[saunnerId]` です。
+- ルート `/` は独自画面を持たず、代表データの `/saunners/136461` へリダイレクトします。
 - `saunnerId` はサウナイキタイの `https://sauna-ikitai.com/saunners/xxx` の `xxx` と対応します。
 - DBに `saunners` と `prefecture_visits` がある場合は地図を表示します。
 - DBにデータがない場合はスクレイピング開始ボタンを表示します。
