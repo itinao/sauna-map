@@ -1,4 +1,8 @@
-export function HomePage() {
+import { listPrefectureVisits } from "@/entities/prefecture-visit";
+
+export async function HomePage() {
+  const prefectureVisits = await listPrefectureVisits();
+
   return (
     <main className="flex flex-1 flex-col bg-slate-50 text-slate-950">
       <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-5 py-8 sm:px-8 lg:py-12">
@@ -50,6 +54,31 @@ export function HomePage() {
                 <dd className="font-medium">30回</dd>
               </div>
             </dl>
+
+            <div className="mt-6 border-t border-slate-200 pt-5">
+              <h2 className="text-base font-semibold">DB接続確認</h2>
+              {prefectureVisits.length > 0 ? (
+                <ul className="mt-4 space-y-3 text-sm">
+                  {prefectureVisits.map((prefectureVisit) => (
+                    <li
+                      key={prefectureVisit.id}
+                      className="flex items-center justify-between rounded border border-blue-100 bg-blue-50 px-3 py-2"
+                    >
+                      <span className="font-medium">
+                        {prefectureVisit.prefectureName}
+                      </span>
+                      <span className="font-mono text-blue-800">
+                        {prefectureVisit.visitCount}回
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-4 text-sm text-slate-500">
+                  DBにはまだ訪問回数データがありません。
+                </p>
+              )}
+            </div>
           </aside>
         </div>
       </section>
