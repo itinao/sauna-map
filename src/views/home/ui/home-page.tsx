@@ -1,7 +1,16 @@
 import { listPrefectureVisits } from "@/entities/prefecture-visit";
+import { VisitJapanMap } from "@/widgets/visit-map";
+
+const DEMO_USER_ID = "demo-user";
 
 export async function HomePage() {
-  const prefectureVisits = await listPrefectureVisits();
+  const prefectureVisits = await listPrefectureVisits(DEMO_USER_ID);
+  const visitsByPrefectureCode = Object.fromEntries(
+    prefectureVisits.map((prefectureVisit) => [
+      prefectureVisit.prefectureCode,
+      prefectureVisit.visitCount,
+    ]),
+  );
 
   return (
     <main className="flex flex-1 flex-col bg-slate-50 text-slate-950">
@@ -17,23 +26,8 @@ export async function HomePage() {
         </header>
 
         <div className="grid flex-1 gap-6 lg:grid-cols-[1fr_320px]">
-          <div className="flex min-h-[420px] items-center justify-center rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-center">
-              <div className="mx-auto mb-5 grid h-52 w-44 grid-cols-3 gap-2">
-                {Array.from({ length: 18 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="rounded border border-blue-100"
-                    style={{
-                      backgroundColor: `rgb(${230 - index * 5}, ${240 - index * 4}, 255)`,
-                    }}
-                  />
-                ))}
-              </div>
-              <p className="text-sm text-slate-500">
-                日本地図コンポーネントをここに実装します。
-              </p>
-            </div>
+          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <VisitJapanMap visitsByPrefectureCode={visitsByPrefectureCode} />
           </div>
 
           <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -50,7 +44,11 @@ export async function HomePage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">可視化上限</dt>
+                <dt className="text-slate-500">現在のユーザー</dt>
+                <dd className="font-mono text-xs">{DEMO_USER_ID}</dd>
+              </div>
+              <div>
+                <dt className="text-slate-500">色の上限</dt>
                 <dd className="font-medium">30回</dd>
               </div>
             </dl>

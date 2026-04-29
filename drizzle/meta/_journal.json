@@ -8,6 +8,13 @@
       "when": 1777474905747,
       "tag": "0000_woozy_moondragon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777480928458,
+      "tag": "0001_brainy_stardust",
+      "breakpoints": true
     }
   ]
 }

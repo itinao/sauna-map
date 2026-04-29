@@ -14,6 +14,7 @@
 - 都道府県は青色の濃淡で表示します。
 - 訪問回数 `0` は最も薄い色、または未訪問状態として扱います。
 - 色の変化は `30` 回を上限にします。`30` 回を超えた値も、最も濃い青色のままにします。
+- 訪問回数はユーザーごとに保持します。基本単位は `userId + prefectureCode` です。
 - プロダクト内の表示言語は日本語です。
 
 ## 技術スタック
@@ -25,6 +26,7 @@
 - Vercel ホスティング
 - データベース: Vercel Marketplace の Neon Postgres
 - ORM / クエリ層: Drizzle ORM
+- 日本地図: `@react-map/japan`
 
 ## ディレクトリ構成
 
@@ -45,6 +47,30 @@ Feature-Sliced Design を採用します。
 - DB クライアントを module scope で初期化しないでください。
 - `src/shared/db/index.ts` の遅延初期化ヘルパー `getDb()` を使ってください。
 - DB 用の集約スキーマは `src/shared/db/schema.ts` に置き、entity ごとの Drizzle schema は `src/entities/*/model/schema.ts` に置いてください。
+- `prefecture_visits` は `userId + prefectureCode` を一意にします。都道府県コードだけを一意にしないでください。
+- 認証が入るまでは、動作確認用ユーザーとして `demo-user` を使います。
+
+## 地図表示のルール
+
+- 日本地図は `src/widgets/visit-map` に置きます。
+- `@react-map/japan` は client component から import してください。
+- 都道府県コードと地図側のキーの対応は `src/entities/prefecture-visit/model/prefectures.ts` に集約します。
+- 色は `visitCount` を `0` から `30` までに丸めて青色グラデーションにします。
+- `30` 回を超える値は、地図上では `30` 回と同じ濃い青として扱います。
+
+## Vercel / GitHub / Env
+
+- GitHub と Vercel は接続済みです。`main` への push は Vercel 側の自動デプロイ対象です。
+- Vercel Git Integration を使う場合、`DATABASE_URL` などの secret は GitHub Secrets ではなく Vercel Project の Environment Variables を使います。
+- GitHub Actions で migration や deploy を自前実行する場合だけ、GitHub Secrets の設計を別途行ってください。
+- Neon integration は Vercel Project に接続済みです。
+- `.env.local` は Vercel から pull したローカル用 secret なので commit しないでください。
+
+## 検証メモ
+
+- `npm run db:push` で Neon に schema を反映します。
+- `npm run db:seed` で `demo-user` の東京都 `12` 回を投入します。
+- ローカルの `npm run build` はサンドボックス内だと Turbopack の内部ポート制限で落ちることがあります。その場合は通常権限で再実行して確認します。
 - `.env.local` や Vercel の env 出力に含まれる secret 値をログや回答に表示しないでください。
 
 ## コマンド

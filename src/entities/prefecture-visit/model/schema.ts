@@ -10,6 +10,7 @@ export const prefectureVisits = pgTable(
   "prefecture_visits",
   {
     id: text("id").primaryKey(),
+    userId: text("user_id").notNull().default("demo-user"),
     prefectureCode: integer("prefecture_code").notNull(),
     prefectureName: text("prefecture_name").notNull(),
     visitCount: integer("visit_count").notNull().default(0),
@@ -21,7 +22,8 @@ export const prefectureVisits = pgTable(
       .defaultNow(),
   },
   (table) => [
-    uniqueIndex("prefecture_visits_prefecture_code_idx").on(
+    uniqueIndex("prefecture_visits_user_prefecture_idx").on(
+      table.userId,
       table.prefectureCode,
     ),
   ],
