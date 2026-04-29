@@ -1,0 +1,58 @@
+export function HomePage() {
+  return (
+    <main className="flex flex-1 flex-col bg-slate-50 text-slate-950">
+      <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-5 py-8 sm:px-8 lg:py-12">
+        <header className="flex flex-col gap-3">
+          <p className="text-sm font-medium text-blue-700">Sauna Map</p>
+          <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
+            都道府県ごとの訪問回数を、日本地図で記録する
+          </h1>
+          <p className="max-w-2xl text-base leading-7 text-slate-600">
+            30回を上限にした青色グラデーションで、よく行く地域ほど濃く表示します。
+          </p>
+        </header>
+
+        <div className="grid flex-1 gap-6 lg:grid-cols-[1fr_320px]">
+          <div className="flex min-h-[420px] items-center justify-center rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="text-center">
+              <div className="mx-auto mb-5 grid h-52 w-44 grid-cols-3 gap-2">
+                {Array.from({ length: 18 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="rounded border border-blue-100"
+                    style={{
+                      backgroundColor: `rgb(${230 - index * 5}, ${240 - index * 4}, 255)`,
+                    }}
+                  />
+                ))}
+              </div>
+              <p className="text-sm text-slate-500">
+                日本地図コンポーネントをここに実装します。
+              </p>
+            </div>
+          </div>
+
+          <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="text-base font-semibold">初期設定</h2>
+            <dl className="mt-4 space-y-4 text-sm">
+              <div>
+                <dt className="text-slate-500">ホスティング</dt>
+                <dd className="font-medium">Vercel</dd>
+              </div>
+              <div>
+                <dt className="text-slate-500">データベース</dt>
+                <dd className="font-medium">
+                  Neon Postgres via Vercel Marketplace
+                </dd>
+              </div>
+              <div>
+                <dt className="text-slate-500">可視化上限</dt>
+                <dd className="font-medium">30回</dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
+      </section>
+    </main>
+  );
+}
