@@ -10,6 +10,7 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "dotenv -e .env.local -- drizzle-kit push",
     "db:seed": "dotenv -e .env.local -- tsx -r tsconfig-paths/register scripts/seed-prefecture-visit.ts",
+    "db:scrape": "dotenv -e .env.local -- tsx -r tsconfig-paths/register scripts/scrape-saunner.ts",
     "db:studio": "dotenv -e .env.local -- drizzle-kit studio"
   },
   "dependencies": {

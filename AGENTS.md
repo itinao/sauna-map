@@ -49,6 +49,19 @@ Feature-Sliced Design を採用します。
 - DB 用の集約スキーマは `src/shared/db/schema.ts` に置き、entity ごとの Drizzle schema は `src/entities/*/model/schema.ts` に置いてください。
 - `prefecture_visits` は `userId + prefectureCode` を一意にします。都道府県コードだけを一意にしないでください。
 - 認証が入るまでは、動作確認用ユーザーとして `demo-user` を使います。
+- サウナイキタイIDに紐づくユーザーは `saunners` テーブルに保存します。
+- サウナイキタイ由来の集計では `prefecture_visits.userId` に `saunnerId` をそのまま保存します。
+
+## サウナイキタイ連携
+
+- マップURLは `/saunners/[saunnerId]` です。
+- `saunnerId` はサウナイキタイの `https://sauna-ikitai.com/saunners/xxx` の `xxx` と対応します。
+- DBに `saunners` と `prefecture_visits` がある場合は地図を表示します。
+- DBにデータがない場合はスクレイピング開始ボタンを表示します。
+- スクレイピング処理は `src/features/scrape-saunner` に置きます。
+- サ活カードの都道府県は `p-postCard_address` の `[ 東京都 ]` のような表示から抽出します。
+- ページネーションは `?cursor=...` を辿ります。現状は1回の実行で最大20ページまで取得します。
+- 動作確認用CLIは `npm run db:scrape -- <saunnerId>` です。
 
 ## 地図表示のルール
 

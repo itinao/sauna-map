@@ -57,3 +57,7 @@ export const PREFECTURES = [
 export function getPrefectureByCode(code: number) {
   return PREFECTURES.find((prefecture) => prefecture.code === code);
 }
+
+export function getPrefectureByName(name: string) {
+  return PREFECTURES.find((prefecture) => prefecture.name === name);
+}
