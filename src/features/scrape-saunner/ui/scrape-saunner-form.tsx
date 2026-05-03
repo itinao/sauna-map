@@ -20,7 +20,7 @@ function SubmitButton({ disabled, idleLabel }: SubmitButtonProps) {
 
   return (
     <button
-      className="inline-flex h-11 items-center gap-2 rounded bg-blue-700 px-4 text-sm font-semibold text-white transition-colors hover:bg-blue-800 disabled:cursor-wait disabled:bg-blue-400"
+      className="inline-flex h-11 w-full items-center justify-center gap-2 rounded bg-blue-700 px-4 text-sm font-semibold text-white transition-colors hover:bg-blue-800 disabled:cursor-wait disabled:bg-blue-400 sm:w-auto"
       disabled={isDisabled}
       type="submit"
     >

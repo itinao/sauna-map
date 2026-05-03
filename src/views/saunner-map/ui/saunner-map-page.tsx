@@ -56,23 +56,23 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
 
   return (
     <main className="flex flex-1 flex-col bg-slate-50 text-slate-950">
-      <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-4 py-6 sm:px-6 lg:py-8">
-        <header className="flex flex-col gap-3">
+      <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-5 px-3 py-5 sm:gap-8 sm:px-6 lg:py-8">
+        <header className="flex flex-col gap-2 sm:gap-3">
           <p className="text-sm font-medium text-blue-700">Sauna Map</p>
-          <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
+          <h1 className="text-2xl font-semibold leading-tight sm:text-4xl">
             {saunner?.name ? `${saunner.name}さんのサウナマップ` : "サウナマップ"}
           </h1>
-          <p className="max-w-2xl text-base leading-7 text-slate-600">
+          <p className="max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
             サウナイキタイのサ活から、都道府県ごとの訪問回数を集計します。
           </p>
         </header>
 
         <div className="grid flex-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
-          <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
+          <div className="rounded-lg border border-slate-200 bg-white p-2 shadow-sm sm:p-5">
             <VisitJapanMap visitsByPrefectureCode={visitsByPrefectureCode} />
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <aside className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-base font-semibold">サマリ</h2>
               {isScraping ? <ScrapingStatusBadge /> : null}
@@ -83,15 +83,15 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
               ) : null}
             </div>
             <dl className="mt-4 divide-y divide-slate-100 text-sm">
-              <div className="flex items-center justify-between gap-4 py-3 first:pt-0">
+              <div className="flex flex-col gap-1 py-3 first:pt-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                 <dt className="text-slate-500">更新日時</dt>
-                <dd className="text-right font-medium">
+                <dd className="font-medium sm:text-right">
                   {formatUpdatedAt(saunner?.lastScrapedAt)}
                 </dd>
               </div>
-              <div className="flex items-center justify-between gap-4 py-3">
+              <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                 <dt className="text-slate-500">サウナイキタイID</dt>
-                <dd className="font-mono text-xs">{saunnerId}</dd>
+                <dd className="break-all font-mono text-xs">{saunnerId}</dd>
               </div>
               <div className="flex items-center justify-between gap-4 py-3">
                 <dt className="text-slate-500">サ活合計</dt>

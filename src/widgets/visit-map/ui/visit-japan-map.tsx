@@ -77,12 +77,12 @@ export function VisitJapanMap({ visitsByPrefectureCode }: VisitJapanMapProps) {
   }, []);
 
   return (
-    <div className="flex h-full min-h-[540px] flex-col justify-between gap-5 lg:min-h-[660px]">
-      <div className="flex flex-1 items-center justify-center overflow-hidden">
+    <div className="flex flex-col justify-between gap-4 sm:gap-5">
+      <div className="flex items-center justify-center overflow-hidden">
         <svg
           ref={svgRef}
           aria-label="都道府県ごとの訪問回数"
-          className="h-full max-h-[760px] min-h-[500px] w-full max-w-[760px]"
+          className="aspect-square w-full max-w-[760px]"
           role="img"
           viewBox={MAP_VIEW_BOX}
           xmlns="http://www.w3.org/2000/svg"
