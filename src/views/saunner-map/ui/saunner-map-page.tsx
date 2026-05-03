@@ -58,7 +58,6 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
     <main className="flex flex-1 flex-col bg-slate-50 text-slate-950">
       <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-5 px-3 py-5 sm:gap-8 sm:px-6 lg:py-8">
         <header className="flex flex-col gap-2 sm:gap-3">
-          <p className="text-sm font-medium text-blue-700">Sauna Map</p>
           <h1 className="text-2xl font-semibold leading-tight sm:text-4xl">
             {saunner?.name ? `${saunner.name}さんのサウナマップ` : "サウナマップ"}
           </h1>
