@@ -15,17 +15,17 @@ type LabelPosition = {
   y: number;
 };
 
-const MAX_VISIT_COUNT = 30;
 const MAP_VIEW_BOX = "0 0 1000 1000";
 const PREFECTURE_BORDER_COLOR = "#94a3b8";
+const PREFECTURE_LABEL_COLOR = "#0f172a";
+const PREFECTURE_LABEL_OUTLINE_COLOR = "#ffffff";
 const PREFECTURES_BY_CODE = new Map(
   PREFECTURES.map((prefecture) => [prefecture.code, prefecture]),
 );
 const VISIT_COLOR_STEPS = [
   { color: "#ffffff", label: "0回", max: 0, min: 0 },
   { color: "#dbeafe", label: "1-4回", max: 4, min: 1 },
-  { color: "#93c5fd", label: "5-14回", max: 14, min: 5 },
-  { color: "#2563eb", label: "15-29回", max: 29, min: 15 },
+  { color: "#60a5fa", label: "5-29回", max: 29, min: 5 },
   { color: "#0f2f7f", label: "30回以上", max: Infinity, min: 30 },
 ] as const;
 
@@ -105,7 +105,6 @@ export function VisitJapanMap({ visitsByPrefectureCode }: VisitJapanMapProps) {
             const visitCount =
               visitsByPrefectureCode[prefecturePath.code] ?? 0;
             const labelPosition = labelPositions[prefecturePath.code];
-            const isDark = visitCount >= MAX_VISIT_COUNT / 2;
             const label = prefecture
               ? getShortPrefectureName(prefecture.name)
               : "";
@@ -140,10 +139,14 @@ export function VisitJapanMap({ visitsByPrefectureCode }: VisitJapanMapProps) {
                   <text
                     aria-hidden="true"
                     dominantBaseline="middle"
-                    fill={isDark ? "#ffffff" : "#0f172a"}
+                    fill={PREFECTURE_LABEL_COLOR}
                     fontSize={fontSize}
                     fontWeight={700}
+                    paintOrder="stroke fill"
                     pointerEvents="none"
+                    stroke={PREFECTURE_LABEL_OUTLINE_COLOR}
+                    strokeLinejoin="round"
+                    strokeWidth={5}
                     textAnchor="middle"
                     x={labelPosition.x}
                     y={labelPosition.y}
@@ -157,7 +160,7 @@ export function VisitJapanMap({ visitsByPrefectureCode }: VisitJapanMapProps) {
         </svg>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 sm:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 sm:grid-cols-4">
         {VISIT_COLOR_STEPS.map((step) => (
           <div key={step.label} className="flex items-center gap-2">
             <span
