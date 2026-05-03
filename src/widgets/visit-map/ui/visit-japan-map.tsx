@@ -17,20 +17,24 @@ type LabelPosition = {
 
 const MAX_VISIT_COUNT = 30;
 const MAP_VIEW_BOX = "0 0 1000 1000";
+const PREFECTURE_BORDER_COLOR = "#94a3b8";
 const PREFECTURES_BY_CODE = new Map(
   PREFECTURES.map((prefecture) => [prefecture.code, prefecture]),
 );
+const VISIT_COLOR_STEPS = [
+  { color: "#ffffff", label: "0回", max: 0, min: 0 },
+  { color: "#dbeafe", label: "1-4回", max: 4, min: 1 },
+  { color: "#93c5fd", label: "5-14回", max: 14, min: 5 },
+  { color: "#2563eb", label: "15-29回", max: 29, min: 15 },
+  { color: "#0f2f7f", label: "30回以上", max: Infinity, min: 30 },
+] as const;
 
 function getVisitColor(visitCount: number) {
-  const cappedCount = Math.min(Math.max(visitCount, 0), MAX_VISIT_COUNT);
-  const ratio = cappedCount / MAX_VISIT_COUNT;
-  const light = [232, 242, 255];
-  const dark = [20, 85, 170];
-  const rgb = light.map((channel, index) =>
-    Math.round(channel + (dark[index] - channel) * ratio),
+  return (
+    VISIT_COLOR_STEPS.find(
+      (step) => visitCount >= step.min && visitCount <= step.max,
+    )?.color ?? VISIT_COLOR_STEPS[0].color
   );
-
-  return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
 }
 
 function getShortPrefectureName(name: string) {
@@ -128,9 +132,9 @@ export function VisitJapanMap({ visitsByPrefectureCode }: VisitJapanMapProps) {
                   d={prefecturePath.d}
                   data-prefecture-code={prefecturePath.code}
                   fill={getVisitColor(visitCount)}
-                  stroke="#ffffff"
+                  stroke={PREFECTURE_BORDER_COLOR}
                   strokeLinejoin="round"
-                  strokeWidth={6}
+                  strokeWidth={4}
                 />
                 {prefecture && labelPosition ? (
                   <text
@@ -153,10 +157,17 @@ export function VisitJapanMap({ visitsByPrefectureCode }: VisitJapanMapProps) {
         </svg>
       </div>
 
-      <div className="grid gap-3 text-xs text-slate-600 sm:grid-cols-[auto_1fr_auto] sm:items-center">
-        <span>0回</span>
-        <div className="h-2 rounded-full bg-gradient-to-r from-[#e8f2ff] to-[#1455aa]" />
-        <span>30回以上</span>
+      <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 sm:grid-cols-5">
+        {VISIT_COLOR_STEPS.map((step) => (
+          <div key={step.label} className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 rounded border border-slate-300"
+              style={{ backgroundColor: step.color }}
+            />
+            <span>{step.label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
