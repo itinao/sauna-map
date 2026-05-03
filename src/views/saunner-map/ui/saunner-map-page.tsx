@@ -41,6 +41,12 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
   const hasScrapedData = Boolean(saunner) && prefectureVisits.length > 0;
   const isScraping = saunner?.scrapeStatus === "running";
   const hasScrapeFailed = saunner?.scrapeStatus === "failed";
+  const scrapedPostCountLabel = hasScrapedData
+    ? `${saunner?.scrapedPostCount}件`
+    : "-";
+  const visitedPrefectureCountLabel = hasScrapedData
+    ? `${prefectureVisits.length} / ${TOTAL_PREFECTURE_COUNT}`
+    : "-";
   const visitsByPrefectureCode = Object.fromEntries(
     prefectureVisits.map((prefectureVisit) => [
       prefectureVisit.prefectureCode,
@@ -61,55 +67,53 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
           </p>
         </header>
 
-        {hasScrapedData ? (
-          <div className="grid flex-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
-            <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
-              <VisitJapanMap visitsByPrefectureCode={visitsByPrefectureCode} />
+        <div className="grid flex-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
+            <VisitJapanMap visitsByPrefectureCode={visitsByPrefectureCode} />
+          </div>
+
+          <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-base font-semibold">サマリ</h2>
+              {isScraping ? <ScrapingStatusBadge /> : null}
+              {hasScrapeFailed ? (
+                <span className="rounded bg-red-50 px-2 py-1 text-xs font-semibold text-red-700">
+                  更新失敗
+                </span>
+              ) : null}
+            </div>
+            <dl className="mt-4 divide-y divide-slate-100 text-sm">
+              <div className="flex items-center justify-between gap-4 py-3 first:pt-0">
+                <dt className="text-slate-500">更新日時</dt>
+                <dd className="text-right font-medium">
+                  {formatUpdatedAt(saunner?.lastScrapedAt)}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-3">
+                <dt className="text-slate-500">サウナイキタイID</dt>
+                <dd className="font-mono text-xs">{saunnerId}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-3">
+                <dt className="text-slate-500">サ活合計</dt>
+                <dd className="font-semibold">{scrapedPostCountLabel}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-3 last:pb-0">
+                <dt className="text-slate-500">訪問都道府県</dt>
+                <dd className="font-semibold">{visitedPrefectureCountLabel}</dd>
+              </div>
+            </dl>
+
+            <div className="mt-5">
+              <ScrapeSaunnerForm
+                disabled={isScraping}
+                idleLabel="更新する"
+                saunnerId={saunnerId}
+              />
             </div>
 
-            <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="text-base font-semibold">サマリ</h2>
-                {isScraping ? <ScrapingStatusBadge /> : null}
-                {hasScrapeFailed ? (
-                  <span className="rounded bg-red-50 px-2 py-1 text-xs font-semibold text-red-700">
-                    更新失敗
-                  </span>
-                ) : null}
-              </div>
-              <dl className="mt-4 divide-y divide-slate-100 text-sm">
-                <div className="flex items-center justify-between gap-4 py-3 first:pt-0">
-                  <dt className="text-slate-500">更新日時</dt>
-                  <dd className="text-right font-medium">
-                    {formatUpdatedAt(saunner?.lastScrapedAt)}
-                  </dd>
-                </div>
-                <div className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-slate-500">サウナイキタイID</dt>
-                  <dd className="font-mono text-xs">{saunnerId}</dd>
-                </div>
-                <div className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-slate-500">サ活合計</dt>
-                  <dd className="font-semibold">{saunner?.scrapedPostCount}件</dd>
-                </div>
-                <div className="flex items-center justify-between gap-4 py-3 last:pb-0">
-                  <dt className="text-slate-500">訪問都道府県</dt>
-                  <dd className="font-semibold">
-                    {prefectureVisits.length} / {TOTAL_PREFECTURE_COUNT}
-                  </dd>
-                </div>
-              </dl>
-
-              <div className="mt-5">
-                <ScrapeSaunnerForm
-                  disabled={isScraping}
-                  idleLabel="更新する"
-                  saunnerId={saunnerId}
-                />
-              </div>
-
-              <div className="mt-6 border-t border-slate-200 pt-5">
-                <h2 className="text-base font-semibold">都道府県別の回数</h2>
+            <div className="mt-6 border-t border-slate-200 pt-5">
+              <h2 className="text-base font-semibold">都道府県別の回数</h2>
+              {hasScrapedData ? (
                 <ul className="mt-4 divide-y divide-slate-100 text-sm">
                   {prefectureVisits.map((prefectureVisit) => (
                     <li
@@ -125,27 +129,17 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
                     </li>
                   ))}
                 </ul>
-              </div>
-            </aside>
-          </div>
-        ) : (
-          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="max-w-xl space-y-4">
-              <h2 className="text-xl font-semibold">まだデータがありません</h2>
-              <p className="text-sm leading-6 text-slate-600">
-                {isScraping
-                  ? "サウナイキタイの公開サ活ページから都道府県を集計しています。"
-                  : "サウナイキタイの公開サ活ページから都道府県を集計し、DBに保存します。"}
-              </p>
+              ) : (
+                <p className="mt-4 text-sm font-medium text-slate-500">-</p>
+              )}
               {hasScrapeFailed ? (
-                <p className="text-sm font-medium text-red-700">
-                  前回の集計に失敗しました。時間をおいて再実行してください。
+                <p className="mt-4 text-sm font-medium text-red-700">
+                  前回の集計に失敗しました。
                 </p>
               ) : null}
-              <ScrapeSaunnerForm disabled={isScraping} saunnerId={saunnerId} />
             </div>
-          </div>
-        )}
+          </aside>
+        </div>
       </section>
     </main>
   );
