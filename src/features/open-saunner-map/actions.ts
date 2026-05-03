@@ -19,6 +19,14 @@ function extractSaunnerId(input: string) {
     return value;
   }
 
+  const sharedTextMatch = value.match(
+    /https?:\/\/(?:www\.)?sauna-ikitai\.com\/saunners\/(\d+)/u,
+  );
+
+  if (sharedTextMatch) {
+    return sharedTextMatch[1];
+  }
+
   try {
     const url = new URL(value);
     const match = url.pathname.match(/^\/saunners\/(\d+)/u);

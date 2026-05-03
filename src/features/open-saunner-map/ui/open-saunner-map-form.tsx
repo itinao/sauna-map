@@ -58,7 +58,7 @@ export function OpenSaunnerMapForm() {
         <SubmitButton />
       </div>
       <p className="text-xs leading-5 text-slate-500">
-        例: https://sauna-ikitai.com/saunners/136461 または 136461
+        例: https://sauna-ikitai.com/saunners/136461、136461、スマホアプリの共有テキスト
       </p>
       {state.error ? (
         <p className="text-sm font-medium text-red-700">{state.error}</p>
