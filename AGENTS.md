@@ -56,7 +56,7 @@ Feature-Sliced Design を採用します。
 ## サウナイキタイ連携
 
 - マップURLは `/saunners/[saunnerId]` です。
-- ルート `/` は独自画面を持たず、代表データの `/saunners/136461` へリダイレクトします。
+- ルート `/` はサウナイキタイURLまたはIDを入力する入口ページです。送信時にデータ更新を行い、`/saunners/[saunnerId]` へ遷移します。
 - `saunnerId` はサウナイキタイの `https://sauna-ikitai.com/saunners/xxx` の `xxx` と対応します。
 - DBに `saunners` と `prefecture_visits` がある場合は地図を表示します。
 - DBにデータがない場合はスクレイピング開始ボタンを表示します。

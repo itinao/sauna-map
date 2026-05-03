@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
+import { HomePage } from "@/views/home";
 
 export const dynamic = "force-dynamic";
 
 export default function Home() {
-  redirect("/saunners/136461");
+  return <HomePage />;
 }
