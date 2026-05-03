@@ -1,4 +1,5 @@
 import {
+  bigint,
   integer,
   pgTable,
   text,
@@ -9,10 +10,11 @@ import {
 export const prefectureVisits = pgTable(
   "prefecture_visits",
   {
-    id: text("id").primaryKey(),
+    id: bigint("id", { mode: "number" })
+      .primaryKey()
+      .generatedByDefaultAsIdentity(),
     userId: text("user_id").notNull().default("demo-user"),
     prefectureCode: integer("prefecture_code").notNull(),
-    prefectureName: text("prefecture_name").notNull(),
     visitCount: integer("visit_count").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

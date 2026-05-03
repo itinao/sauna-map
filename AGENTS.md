@@ -49,9 +49,12 @@ Feature-Sliced Design を採用します。
 - `src/shared/db/index.ts` の遅延初期化ヘルパー `getDb()` を使ってください。
 - DB 用の集約スキーマは `src/shared/db/schema.ts` に置き、entity ごとの Drizzle schema は `src/entities/*/model/schema.ts` に置いてください。
 - `prefecture_visits` は `userId + prefectureCode` を一意にします。都道府県コードだけを一意にしないでください。
+- `prefecture_visits.id` は `bigserial` のサロゲートキーです。
+- `prefecture_visits` に都道府県名を保存しません。都道府県名は `prefectureCode` から `src/entities/prefecture-visit/model/prefectures.ts` で解決します。
 - 現在の主導線はサウナイキタイID単位です。`prefecture_visits.userId` は基本的に `saunnerId` を使います。
 - サウナイキタイIDに紐づくユーザーは `saunners` テーブルに保存します。
 - サウナイキタイ由来の集計では `prefecture_visits.userId` に `saunnerId` をそのまま保存します。
+- 時間系カラムは `timestamp with time zone` で保存します。DB上はUTC基準の時刻として扱い、画面表示時に `Asia/Tokyo` へ変換します。
 
 ## サウナイキタイ連携
 

@@ -59,7 +59,7 @@ type ScrapeResult = {
   name: string | null;
   pageCount: number;
   postCount: number;
-  visitsByPrefectureCode: Map<number, { name: string; count: number }>;
+  visitsByPrefectureCode: Map<number, number>;
 };
 
 type SaunnerScrapeStatus = "completed" | "failed" | "running";
@@ -132,10 +132,7 @@ export async function scrapeSaunner(saunnerId: string): Promise<ScrapeResult> {
   );
   const maxPages = getNumberFromEnv("SCRAPE_MAX_PAGES", DEFAULT_MAX_PAGES);
   const visitedUrls = new Set<string>();
-  const visitsByPrefectureCode = new Map<
-    number,
-    { name: string; count: number }
-  >();
+  const visitsByPrefectureCode = new Map<number, number>();
 
   while (nextUrl) {
     if (visitedUrls.has(nextUrl)) {
@@ -160,10 +157,7 @@ export async function scrapeSaunner(saunnerId: string): Promise<ScrapeResult> {
 
       postCount += 1;
       const current = visitsByPrefectureCode.get(prefecture.code);
-      visitsByPrefectureCode.set(prefecture.code, {
-        name: prefecture.name,
-        count: (current?.count ?? 0) + 1,
-      });
+      visitsByPrefectureCode.set(prefecture.code, (current ?? 0) + 1);
     }
 
     nextUrl = extractNextUrl(html, saunnerId);
@@ -230,22 +224,19 @@ export async function saveSaunnerScrapeResult(
       ),
     );
 
-  for (const [prefectureCode, visit] of result.visitsByPrefectureCode) {
+  for (const [prefectureCode, visitCount] of result.visitsByPrefectureCode) {
     await db
       .insert(prefectureVisits)
       .values({
-        id: `${saunnerId}-prefecture-${prefectureCode}`,
         userId: saunnerId,
         prefectureCode,
-        prefectureName: visit.name,
-        visitCount: visit.count,
+        visitCount,
         updatedAt: now,
       })
       .onConflictDoUpdate({
         target: [prefectureVisits.userId, prefectureVisits.prefectureCode],
         set: {
-          prefectureName: visit.name,
-          visitCount: visit.count,
+          visitCount,
           updatedAt: now,
         },
       });
