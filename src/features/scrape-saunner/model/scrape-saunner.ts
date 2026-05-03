@@ -62,6 +62,8 @@ type ScrapeResult = {
   visitsByPrefectureCode: Map<number, { name: string; count: number }>;
 };
 
+type SaunnerScrapeStatus = "completed" | "failed" | "running";
+
 function extractSaunnerName(html: string) {
   const titleMatch = html.match(/<title>\s*([^<]+?)さんのサ活一覧/u);
   return titleMatch?.[1]?.trim() ?? null;
@@ -248,4 +250,26 @@ export async function saveSaunnerScrapeResult(
         },
       });
   }
+}
+
+export async function saveSaunnerScrapeStatus(
+  saunnerId: string,
+  status: SaunnerScrapeStatus,
+) {
+  const now = new Date();
+
+  await getDb()
+    .insert(saunners)
+    .values({
+      id: saunnerId,
+      scrapeStatus: status,
+      updatedAt: now,
+    })
+    .onConflictDoUpdate({
+      target: saunners.id,
+      set: {
+        scrapeStatus: status,
+        updatedAt: now,
+      },
+    });
 }

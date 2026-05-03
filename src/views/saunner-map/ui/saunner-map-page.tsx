@@ -9,6 +9,18 @@ type SaunnerMapPageProps = {
 
 const TOTAL_PREFECTURE_COUNT = 47;
 
+function ScrapingStatusBadge() {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700">
+      <span
+        aria-hidden="true"
+        className="h-1.5 w-1.5 rounded-full bg-blue-600 motion-safe:animate-pulse"
+      />
+      集計中
+    </span>
+  );
+}
+
 function formatUpdatedAt(date: Date | null | undefined) {
   if (!date) {
     return "-";
@@ -27,6 +39,8 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
     listPrefectureVisits(saunnerId),
   ]);
   const hasScrapedData = Boolean(saunner) && prefectureVisits.length > 0;
+  const isScraping = saunner?.scrapeStatus === "running";
+  const hasScrapeFailed = saunner?.scrapeStatus === "failed";
   const visitsByPrefectureCode = Object.fromEntries(
     prefectureVisits.map((prefectureVisit) => [
       prefectureVisit.prefectureCode,
@@ -54,7 +68,15 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
             </div>
 
             <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <h2 className="text-base font-semibold">サマリ</h2>
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-base font-semibold">サマリ</h2>
+                {isScraping ? <ScrapingStatusBadge /> : null}
+                {hasScrapeFailed ? (
+                  <span className="rounded bg-red-50 px-2 py-1 text-xs font-semibold text-red-700">
+                    更新失敗
+                  </span>
+                ) : null}
+              </div>
               <dl className="mt-4 divide-y divide-slate-100 text-sm">
                 <div className="flex items-center justify-between gap-4 py-3 first:pt-0">
                   <dt className="text-slate-500">更新日時</dt>
@@ -77,6 +99,14 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
                   </dd>
                 </div>
               </dl>
+
+              <div className="mt-5">
+                <ScrapeSaunnerForm
+                  disabled={isScraping}
+                  idleLabel="更新する"
+                  saunnerId={saunnerId}
+                />
+              </div>
 
               <div className="mt-6 border-t border-slate-200 pt-5">
                 <h2 className="text-base font-semibold">都道府県別の回数</h2>
@@ -103,9 +133,16 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
             <div className="max-w-xl space-y-4">
               <h2 className="text-xl font-semibold">まだデータがありません</h2>
               <p className="text-sm leading-6 text-slate-600">
-                サウナイキタイの公開サ活ページから都道府県を集計し、DBに保存します。
+                {isScraping
+                  ? "サウナイキタイの公開サ活ページから都道府県を集計しています。"
+                  : "サウナイキタイの公開サ活ページから都道府県を集計し、DBに保存します。"}
               </p>
-              <ScrapeSaunnerForm saunnerId={saunnerId} />
+              {hasScrapeFailed ? (
+                <p className="text-sm font-medium text-red-700">
+                  前回の集計に失敗しました。時間をおいて再実行してください。
+                </p>
+              ) : null}
+              <ScrapeSaunnerForm disabled={isScraping} saunnerId={saunnerId} />
             </div>
           </div>
         )}
