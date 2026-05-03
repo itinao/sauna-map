@@ -7,6 +7,20 @@ type SaunnerMapPageProps = {
   saunnerId: string;
 };
 
+const TOTAL_PREFECTURE_COUNT = 47;
+
+function formatUpdatedAt(date: Date | null | undefined) {
+  if (!date) {
+    return "-";
+  }
+
+  return new Intl.DateTimeFormat("ja-JP", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Tokyo",
+  }).format(date);
+}
+
 export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
   const [saunner, prefectureVisits] = await Promise.all([
     getSaunner(saunnerId),
@@ -40,33 +54,37 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
             </div>
 
             <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <h2 className="text-base font-semibold">取得データ</h2>
-              <dl className="mt-4 space-y-4 text-sm">
-                <div>
+              <h2 className="text-base font-semibold">サマリ</h2>
+              <dl className="mt-4 divide-y divide-slate-100 text-sm">
+                <div className="flex items-center justify-between gap-4 py-3 first:pt-0">
+                  <dt className="text-slate-500">更新日時</dt>
+                  <dd className="text-right font-medium">
+                    {formatUpdatedAt(saunner?.lastScrapedAt)}
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between gap-4 py-3">
                   <dt className="text-slate-500">サウナイキタイID</dt>
                   <dd className="font-mono text-xs">{saunnerId}</dd>
                 </div>
-                <div>
-                  <dt className="text-slate-500">取得ページ数</dt>
-                  <dd className="font-medium">{saunner?.scrapedPageCount}ページ</dd>
+                <div className="flex items-center justify-between gap-4 py-3">
+                  <dt className="text-slate-500">サ活合計</dt>
+                  <dd className="font-semibold">{saunner?.scrapedPostCount}件</dd>
                 </div>
-                <div>
-                  <dt className="text-slate-500">集計サ活数</dt>
-                  <dd className="font-medium">{saunner?.scrapedPostCount}件</dd>
-                </div>
-                <div>
-                  <dt className="text-slate-500">色の上限</dt>
-                  <dd className="font-medium">30回</dd>
+                <div className="flex items-center justify-between gap-4 py-3 last:pb-0">
+                  <dt className="text-slate-500">訪問都道府県</dt>
+                  <dd className="font-semibold">
+                    {prefectureVisits.length} / {TOTAL_PREFECTURE_COUNT}
+                  </dd>
                 </div>
               </dl>
 
               <div className="mt-6 border-t border-slate-200 pt-5">
-                <h2 className="text-base font-semibold">都道府県別</h2>
-                <ul className="mt-4 space-y-3 text-sm">
+                <h2 className="text-base font-semibold">都道府県別の回数</h2>
+                <ul className="mt-4 divide-y divide-slate-100 text-sm">
                   {prefectureVisits.map((prefectureVisit) => (
                     <li
                       key={prefectureVisit.id}
-                      className="flex items-center justify-between rounded border border-blue-100 bg-blue-50 px-3 py-2"
+                      className="flex items-center justify-between gap-4 py-2"
                     >
                       <span className="font-medium">
                         {prefectureVisit.prefectureName}
