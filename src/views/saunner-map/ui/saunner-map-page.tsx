@@ -22,7 +22,7 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
 
   return (
     <main className="flex flex-1 flex-col bg-slate-50 text-slate-950">
-      <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-5 py-8 sm:px-8 lg:py-12">
+      <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-4 py-6 sm:px-6 lg:py-8">
         <header className="flex flex-col gap-3">
           <p className="text-sm font-medium text-blue-700">Sauna Map</p>
           <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
@@ -34,8 +34,8 @@ export async function SaunnerMapPage({ saunnerId }: SaunnerMapPageProps) {
         </header>
 
         {hasScrapedData ? (
-          <div className="grid flex-1 gap-6 lg:grid-cols-[1fr_320px]">
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="grid flex-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
+            <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
               <VisitJapanMap visitsByPrefectureCode={visitsByPrefectureCode} />
             </div>
 
